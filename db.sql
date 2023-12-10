@@ -37,6 +37,33 @@ AS $$
 $$
 LANGUAGE SQL;
 
+-- Menghitung tarif untuk mobil ber-picc p
+CREATE OR REPLACE FUNCTION hitung_tarif(p integer)
+RETURNS bigint
+AS $$
+DECLARE
+	w TIMESTAMP;
+	t smallint := tarif_terkini();
+BEGIN
+	SELECT waktu INTO w FROM catatan WHERE picc = p AND tipe = 'masuk' ORDER BY waktu DESC LIMIT 1;
+	RETURN (extract(minute FROM age(LOCALTIMESTAMP, w)) + 1) * t;
+END;
+$$
+LANGUAGE plpgsql;
+
+-- Mendapatkan tarif terkini
+CREATE OR REPLACE FUNCTION tarif_terkini()
+RETURNS smallint
+AS $$
+DECLARE
+	t smallint;
+BEGIN
+	SELECT tarif INTO t FROM tarif ORDER BY berlaku DESC LIMIT 1;
+	RETURN t;
+END;
+$$
+LANGUAGE plpgsql;
+
 -- Memunculkan error dengan pesannya.
 CREATE FUNCTION galat(m character(128))
 RETURNS void

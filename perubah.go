@@ -12,7 +12,7 @@ func perubah(c echo.Context) error {
 	var t int
 	err := p.QueryRow(
 		context.Background(),
-		"SELECT tarif FROM tarif ORDER BY berlaku DESC").Scan(&t)
+		"SELECT tarif_terkini()").Scan(&t)
 	if (err != nil) {
 		return c.String(
 			http.StatusInternalServerError,
@@ -21,6 +21,6 @@ func perubah(c echo.Context) error {
 		return c.Render(
 			http.StatusOK,
 			"perubah.html",
-			strconv.Itoa(t))
+			strconv.FormatInt(int64(t), 10))
 	}
 }

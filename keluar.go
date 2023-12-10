@@ -23,6 +23,16 @@ func keluar(c echo.Context) error {
 			"Uid tidak layak")
 	}
 
+	var t int64
+	if p.QueryRow(
+		context.Background(),
+		"SELECT hitung_tarif($1)",
+		pi).Scan(&t) != nil {
+		return c.String(
+			http.StatusInternalServerError,
+			"Tidak bisa menghitung tarif")
+	}
+
 	_, erro := p.Exec(
 		context.Background(),
 		"DELETE FROM terparkir WHERE picc = $1",
@@ -32,6 +42,6 @@ func keluar(c echo.Context) error {
 			http.StatusInternalServerError,
 			"Tidak bisa menghapus entri")
 	} else {
-		return c.String(http.StatusOK, "Keluar")
+		return c.String(http.StatusOK, strconv.FormatInt(t, 10))
 	}
 }
