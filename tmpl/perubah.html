@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="id-ID">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+
+		<title>DIRIR | Perubah Tarif</title>
+    
+		<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300italic,700,700italic">
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.css">
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/milligram/1.4.1/milligram.css">
+  	</head>
+
+  	<body>
+		<div class="container">
+			<h1>DIRIR</h1>
+			<h2>Form Perubahan Tarif</h2>
+			<p>Tarif terkini: {{ . }}</p>
+			<form action="/rubah" method="POST">
+  				<fieldset>
+    				<label for="tarif">Tarif</label>
+    				<input type="text" id="tarif" name="tarif">
+    				<input class="button-primary" type="submit" value="Rubah">
+  				</fieldset>
+			</form>
+			
+			<div class="row">
+				<div class="column"><a class="button button-clear" href="/">Beranda</a></div>
+				<div class="column"><a class="button button-clear" href="/catatan">Catatan</a></div>
+			</div>
+		</div>
+	</body>
+</html>

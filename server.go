@@ -1,30 +1,72 @@
 package main
 
 import (
-  "github.com/labstack/echo/v4"
-  "github.com/labstack/echo/v4/middleware"
-  "net/http"
-  "os"
+	"context"
+	"fmt"
+	"os"
+	"io"
+	"html/template"
+
+	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
+	"github.com/jackc/pgx/v5/pgxpool"
 )
 
+var p *pgxpool.Pool
+
 func main() {
-  // Echo instance
-  e := echo.New()
+	var er error
 
-  a := ":" + os.Getenv("PORT")
+  	// Echo, alamat, dan hubungan database
+  	e 	:= echo.New()
+  	a 	:= ":" + os.Getenv("PORT")
+	p, er	= pgxpool.New(
+			context.Background(),
+			os.Getenv("DATABASE_URL"))
+	
+	if er != nil {
+		fmt.Fprintf(
+			os.Stderr,
+			"Tidak bisa terhubung dengan basis data: %v\n",
+			er)
 
-  // Middleware
-  e.Use(middleware.Logger())
-  e.Use(middleware.Recover())
+		os.Exit(1)
+	}
+	
+	defer p.Close()
+	
+	e.Renderer = &MyTemplate {
+		templates:
+			template.Must(template.ParseGlob("tmpl/*.html")),
+	}
 
-  // Routes
-  e.GET("/", hello)
+	// Middleware
+	e.Use(middleware.Logger())
+  	e.Use(middleware.Recover())
 
-  // Start server
-  e.Logger.Fatal(e.Start(a))
+  	// Rute-rutenya
+  	e.GET("/", beranda)
+	e.GET("/catatan", catatan)
+	e.GET("/perubah", perubah)
+	e.GET("/tarif", tarif)
+	e.GET("/jumlah", jumlah)
+	e.POST("/masuk", masuk)
+	e.POST("/keluar", keluar)
+	e.POST("/rubah", rubah)
+
+  	// Start server
+	e.Logger.Fatal(e.Start(a))
 }
 
-// Handler
-func hello(c echo.Context) error {
-  return c.String(http.StatusOK, "Hello, World!")
+type MyTemplate struct {
+	templates *template.Template
 }
+
+func (t *MyTemplate) Render(
+	w io.Writer,
+	name string,
+	data interface{},
+	c echo.Context) error {
+	return t.templates.ExecuteTemplate(w, name, data)
+}
+

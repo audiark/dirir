@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="id-ID">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+
+		<title>DIRIR | Beranda</title>
+    
+		<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300italic,700,700italic">
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.css">
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/milligram/1.4.1/milligram.css">
+  	</head>
+
+  	<body>
+		<div class="container">
+			<h1>DIRIR</h1>
+			<h2>Mobil yang Terparkir</h2>
+   			<table>
+   				<thead>
+    				<tr>
+      					<th>UID</th>
+      					<th>Nama</th>
+    				</tr>
+  				</thead>
+  				<tbody>
+  					{{ range . }}
+    				<tr>
+      					<td>{{ .Picc }}</td>
+      					<td>{{ .Nama }}</td>
+    				</tr>
+    				{{ end }}
+  				</tbody>
+			</table>
+			
+			<div class="row">
+				<div class="column"><a class="button button-clear" href="/perubah">Perubah Tarif</a></div>
+				<div class="column"><a class="button button-clear" href="/catatan">Catatan</a></div>
+			</div>
+		</div>
+	</body>
+</html>
