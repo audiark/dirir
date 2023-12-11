@@ -16,7 +16,7 @@ func keluar(c echo.Context) error {
 			"Uid kosong")
 	}
 
-	_, err := strconv.ParseInt(pi, 10, 16)
+	_, err := strconv.ParseInt(pi, 10, 32)
 	if (err != nil) {
 		return c.String(
 			http.StatusBadRequest,
