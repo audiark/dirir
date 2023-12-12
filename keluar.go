@@ -33,7 +33,7 @@ func keluar(c echo.Context) error {
 			"Tidak bisa menghitung tarif")
 	}
 
-	_, erro := p.Exec(
+	co, erro := p.Exec(
 		context.Background(),
 		"DELETE FROM terparkir WHERE picc = $1",
 		pi)
@@ -41,6 +41,10 @@ func keluar(c echo.Context) error {
 		return c.String(
 			http.StatusInternalServerError,
 			"Tidak bisa menghapus entri")
+	} else if (co.RowsAffected() == 0) {
+		return c.String(
+			http.StatusInternalServerError,
+			"Entri tidak ada")
 	} else {
 		return c.String(http.StatusOK, strconv.FormatInt(t, 10))
 	}
