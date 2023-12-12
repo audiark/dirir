@@ -14,10 +14,19 @@ type MobilyangTerparkir struct {
 	Nama string
 }
 
+// Model untuk setiap halaman
+type ModelBeranda struct {
+	Terparkir 	[]MobilyangTerparkir
+	Halaman 	uint64
+	BisaSebelumnya	bool
+	BisaSelanjutnya	bool
+	Sebelumnya	uint64
+	Selanjutnya	uint64
+}
+
 func beranda(c echo.Context) error {
 	// Model-model dan penghitung model yang telah terisi 
-	// Deretnya maksimal 4 buah
-	var t [4]MobilyangTerparkir
+	var t [12]MobilyangTerparkir
 	var i int
 
 	// Query parameter "hal"
@@ -35,14 +44,15 @@ func beranda(c echo.Context) error {
 			http.StatusBadRequest,
 			"hal tidak layak")
 	} else {
-		o = (o * 4) - 4
+		o = (o * 11) - 11
 	}
 
 	// Meng-query data
 	r, er := p.Query(
 		context.Background(),
 		`SELECT picc, nama FROM terparkir
-		LIMIT 4 OFFSET $1`,
+		ORDER BY picc DESC
+		LIMIT 12 OFFSET $1`,
 		o)
 	if er != nil {
 		return c.String(
@@ -62,6 +72,17 @@ func beranda(c echo.Context) error {
 		}
 	}
 
-	// Mengirim hanya model-model yang telah terisi ke template
-	return c.Render(http.StatusOK, "beranda.html", t[:i])
+	// Mengekstrak halaman dari offset
+	ha := (o + 11) / 11
+
+	return c.Render(
+		http.StatusOK,
+		"beranda.html",
+		ModelBeranda{
+			t[:i],
+			ha,
+			ha != 1 && i != 0,
+			i == 12,
+			ha - 1,
+			ha + 1})
 }

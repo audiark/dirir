@@ -17,6 +17,16 @@ type CatatanParkir struct {
 	Tipe	string
 }
 
+// Model untuk setiap halaman
+type ModelCatatan struct {
+	Catatan 	[]CatatanParkir
+	Halaman 	uint64
+	BisaSebelumnya	bool
+	BisaSelanjutnya	bool
+	Sebelumnya	uint64
+	Selanjutnya	uint64
+}
+
 func catatan(c echo.Context) error {
 	// Model-model dan penghitung model yang telah terisi 
 	// Deretnya maksimal 12 buah
@@ -38,7 +48,7 @@ func catatan(c echo.Context) error {
 			http.StatusBadRequest,
 			"hal tidak layak")
 	} else {
-		o = (o * 12) - 12
+		o = (o * 11) - 11
 	}
 
 	// Meng-query data
@@ -68,6 +78,17 @@ func catatan(c echo.Context) error {
 		}
 	}
 
-	// Mengirim hanya model-model yang telah terisi ke template
-	return c.Render(http.StatusOK, "catatan.html", ca[:i])
+	// Mengekstrak halaman dari offset
+	ha := (o + 11) / 11
+
+	return c.Render(
+		http.StatusOK,
+		"catatan.html",
+		ModelCatatan{
+			ca[:i],
+			ha,
+			ha != 1 && i != 0,
+			i == 12,
+			ha - 1,
+			ha + 1})
 }

@@ -23,7 +23,7 @@
     				</tr>
   				</thead>
   				<tbody>
-  					{{ range . }}
+  					{{ range .Terparkir }}
     				<tr>
       					<td>{{ .Picc }}</td>
       					<td>{{ .Nama }}</td>
@@ -31,6 +31,20 @@
     				{{ end }}
   				</tbody>
 			</table>
+			
+			<div class="row">
+				<div class="column">
+					{{ if .BisaSebelumnya }}
+					<a class="button button-clear" href="/?hal={{ .Sebelumnya }}">Sebelumnya</a>
+					{{ end }}
+				</div>
+					
+				<div class="column">
+					{{ if .BisaSelanjutnya }}
+					<a class="button button-clear" href="/?hal={{ .Selanjutnya }}">Selanjutnya</a>
+					{{ end }}
+				</div>
+			</div>
 			
 			<div class="row">
 				<div class="column"><a class="button button-clear" href="/perubah">Perubah Tarif</a></div>
